@@ -1,0 +1,234 @@
+:root {
+  --bg-gradient: radial-gradient(circle at 50% 0%, #2b1055 0%, #1a0b2e 50%, #000000 100%);
+  --ball-color: #1a1a1a;
+  --ball-shine: rgba(255, 255, 255, 0.1);
+  --ball-shadow: rgba(0, 0, 0, 0.5);
+  --text-primary: #ffffff;
+  --text-secondary: #a9a9a9;
+  --accent-blue: #4d61fc;
+  --window-inner: #000022;
+  --triangle-blue: #0000ff;
+  --font-main: 'Outfit', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#app {
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: 100vh;
+  justify-content: space-between;
+}
+
+header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(180deg, #fff, #a5a5a5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.05em;
+}
+
+header p {
+  color: var(--text-secondary);
+  font-weight: 300;
+  font-size: 1.1rem;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.scene {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.ball {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #444, #000);
+  background-color: var(--ball-color);
+  position: relative;
+  box-shadow:
+    inset -10px -10px 40px rgba(0, 0, 0, 0.8),
+    inset 10px 10px 40px var(--ball-shine),
+    0 20px 40px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Ensure 3D transforms work for child elements */
+  transform-style: preserve-3d;
+}
+
+.ball:active {
+  transform: scale(0.98);
+}
+
+.ball.shaking {
+  animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0) rotate(-1deg);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0) rotate(2deg);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0) rotate(-4deg);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0) rotate(4deg);
+  }
+}
+
+/* The '8' Face (Front usually, but we'll cheat and just show the answer face mostly or start with 8 and flip usually? 
+   Implementation simplicity: Static '8' side vs Window side. 
+   Let's create a visual trick: The ball is usually "Window" up for user interaction. 
+   Or we can click to flip. 
+   Let's stick to the classic "Window Up" view for web interaction simplicity, maybe standard state is Window Up. 
+*/
+
+/* Hiding the '8' face logic for this simple version, focusing on the window */
+.eight-face {
+  display: none;
+  /* For now, let's focus on the Answer Face being always visible or main view */
+}
+
+.answer-face {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  /* Rim of the window */
+  border: 2px solid #555;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0 0 10px #000;
+}
+
+.window {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1a1a3a, #000011);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-shadow: inset 0 0 20px #000;
+}
+
+.triangle {
+  width: 120px;
+  height: 110px;
+  background-color: var(--triangle-blue);
+  /* Let's draw a blue triangle shape */
+  clip-path: polygon(15% 15%, 85% 15%, 50% 85%);
+  /* Inverted triangle */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px 10px 30px 10px;
+  /* Reduced side padding slightly, increased bottom padding for proper visual centering in triangle */
+  opacity: 0;
+  transition: opacity 1.5s ease-out, transform 2s ease-out;
+  transform: scale(0.5) translateZ(-20px);
+  filter: blur(4px);
+}
+
+.ball.revealing .triangle {
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+  filter: blur(0);
+}
+
+#answer-text {
+  color: #c0d0ff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.2;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  margin-top: -10px;
+  /* Adjust for inverted triangle visual center */
+}
+
+footer {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+footer small {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.6rem;
+}
+
+/* Add a glow for premium feel */
+.ball::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(77, 97, 252, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+@media (max-width: 400px) {
+  header h1 {
+    font-size: 2.2rem;
+  }
+
+  .scene {
+    width: 260px;
+    height: 260px;
+  }
+}
